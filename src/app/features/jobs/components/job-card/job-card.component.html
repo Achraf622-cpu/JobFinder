@@ -1,0 +1,57 @@
+<div
+    class="bg-slate-800 border border-slate-700 rounded-[10px] p-5 mb-3 transition-colors duration-200 hover:border-blue-600">
+    <div class="flex justify-between items-start gap-3 mb-3">
+        <div class="flex-1 min-w-0">
+            <h3 class="text-[1.0625rem] font-semibold text-slate-100 mb-1.5">{{ job().title }}</h3>
+            <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="text-blue-500 font-medium text-[0.9375rem]">{{ job().company }}</span>
+                <span class="text-[0.625rem] py-0.5 px-2 rounded font-semibold uppercase tracking-wide"
+                    [class]="'api-' + job().apiSource" [ngClass]="{
+                        'bg-blue-600/15 text-blue-400': job().apiSource === 'adzuna',
+                        'bg-emerald-600/15 text-emerald-400': job().apiSource === 'arbeitnow',
+                        'bg-red-600/15 text-red-400': job().apiSource === 'usajobs'
+                    }">
+                    {{ getApiLabel(job().apiSource) }}
+                </span>
+            </div>
+        </div>
+
+        @if (authService.isAuthenticated()) {
+        <button
+            class="bg-slate-700 border border-slate-600 rounded-full w-9 h-9 flex items-center justify-center cursor-pointer text-slate-400 text-base transition-all duration-200 shrink-0 hover:bg-slate-600 hover:text-red-400"
+            [class.!bg-red-600]="isFavorite()" [class.!border-red-600]="isFavorite()" [class.!text-white]="isFavorite()"
+            (click)="toggleFavorite()" [title]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'">
+            <i class="bi" [class.bi-heart-fill]="isFavorite()" [class.bi-heart]="!isFavorite()"></i>
+        </button>
+        }
+    </div>
+
+    <div class="flex flex-wrap gap-4 mb-3 text-slate-400 text-[0.8125rem]">
+        <span class="flex items-center gap-1.5"><i class="bi bi-geo-alt text-xs"></i> {{ job().location }}</span>
+        <span class="flex items-center gap-1.5"><i class="bi bi-calendar3 text-xs"></i> {{
+            formatDate(job().publishedDate) }}</span>
+        @if (job().salary) {
+        <span class="flex items-center gap-1.5 text-emerald-500 font-medium"><i
+                class="bi bi-currency-dollar text-xs"></i> {{ job().salary }}</span>
+        }
+    </div>
+
+    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+        {{ truncateDescription(job().description) }}
+    </p>
+
+    <div class="flex gap-2.5 flex-wrap">
+        <a [href]="job().url" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 py-2 px-3.5 rounded-md font-medium text-[0.8125rem] cursor-pointer transition-all duration-200 no-underline border border-slate-600 bg-transparent text-slate-100 hover:bg-slate-700">
+            <i class="bi bi-box-arrow-up-right"></i> View Job
+        </a>
+
+        @if (authService.isAuthenticated()) {
+        <button
+            class="inline-flex items-center gap-1.5 py-2 px-3.5 rounded-md font-medium text-[0.8125rem] cursor-pointer transition-all duration-200 border border-blue-600 bg-blue-600 text-white hover:bg-blue-700"
+            (click)="trackApplication()">
+            <i class="bi bi-clipboard-plus"></i> Track
+        </button>
+        }
+    </div>
+</div>
