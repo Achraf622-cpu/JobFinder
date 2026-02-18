@@ -1,0 +1,11 @@
+<div class="flex items-center justify-center p-10" [class.fixed]="overlay()" [class.inset-0]="overlay()"
+    [class.bg-slate-900/85]="overlay()" [class.backdrop-blur-sm]="overlay()" [class.z-[9999]]="overlay()"
+    [class.p-0]="overlay()">
+    <div class="text-center">
+        <div class="w-12 h-12 border-4 border-indigo-400/20 border-t-indigo-400 rounded-full animate-spin mx-auto">
+        </div>
+        @if (message()) {
+        <p class="mt-4 text-slate-400 text-[0.95rem]">{{ message() }}</p>
+        }
+    </div>
+</div>
