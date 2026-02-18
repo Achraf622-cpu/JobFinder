@@ -1,0 +1,63 @@
+<nav class="bg-slate-900/[.98] backdrop-blur-sm border-b border-slate-700 py-3 fixed top-0 left-0 right-0 z-[1000]">
+    <div class="max-w-[1140px] mx-auto px-4 flex items-center justify-between">
+        <a class="flex items-center gap-2 no-underline text-xl font-bold text-slate-100" routerLink="/">
+            <i class="bi bi-briefcase-fill text-blue-500 text-xl"></i>
+            <span>Job<span class="text-blue-500">Finder</span></span>
+        </a>
+
+        <button class="hidden max-md:block bg-transparent border-none text-slate-400 text-2xl cursor-pointer p-1"
+            (click)="isMenuOpen = !isMenuOpen">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="flex items-center gap-8 max-md:absolute max-md:top-full max-md:left-0 max-md:right-0 max-md:bg-slate-900 max-md:flex-col max-md:p-4 max-md:border-b max-md:border-slate-700 max-md:gap-4"
+            [class.max-md:hidden]="!isMenuOpen">
+            <div class="flex items-center gap-1 max-md:flex-col max-md:w-full max-md:gap-2">
+                <a routerLink="/" routerLinkActive="!text-slate-100 !bg-slate-700"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="text-slate-400 no-underline py-2 px-3.5 rounded-md font-medium text-sm transition-all duration-200 flex items-center gap-1.5 hover:text-slate-100 hover:bg-slate-700 max-md:w-full max-md:justify-center">
+                    <i class="bi bi-house"></i> Home
+                </a>
+
+                @if (authService.isAuthenticated()) {
+                <a routerLink="/favorites" routerLinkActive="!text-slate-100 !bg-slate-700"
+                    class="text-slate-400 no-underline py-2 px-3.5 rounded-md font-medium text-sm transition-all duration-200 flex items-center gap-1.5 hover:text-slate-100 hover:bg-slate-700 max-md:w-full max-md:justify-center">
+                    <i class="bi bi-heart"></i> Favorites
+                    @if (favoritesCount() > 0) {
+                    <span
+                        class="bg-red-600 text-white text-[0.625rem] font-semibold py-0.5 px-1.5 rounded-lg min-w-[16px] text-center">{{
+                        favoritesCount() }}</span>
+                    }
+                </a>
+                <a routerLink="/applications" routerLinkActive="!text-slate-100 !bg-slate-700"
+                    class="text-slate-400 no-underline py-2 px-3.5 rounded-md font-medium text-sm transition-all duration-200 flex items-center gap-1.5 hover:text-slate-100 hover:bg-slate-700 max-md:w-full max-md:justify-center">
+                    <i class="bi bi-clipboard-check"></i> Applications
+                </a>
+                }
+            </div>
+
+            <div class="flex items-center gap-2.5 max-md:flex-col max-md:w-full max-md:gap-2">
+                @if (authService.isAuthenticated()) {
+                <a routerLink="/profile"
+                    class="flex items-center gap-2 no-underline py-1.5 px-2.5 rounded-md transition-colors duration-200 hover:bg-slate-700">
+                    <span
+                        class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-[0.6875rem] font-semibold text-white">{{
+                        getInitials() }}</span>
+                    <span class="text-slate-100 font-medium text-sm">{{ authService.currentUser()?.firstName }}</span>
+                </a>
+                <button
+                    class="inline-flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-slate-600 bg-transparent text-slate-100 hover:bg-slate-800 hover:text-white max-md:w-full max-md:justify-center"
+                    (click)="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+                } @else {
+                <a routerLink="/login"
+                    class="inline-flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-slate-600 bg-transparent text-slate-100 hover:bg-slate-800 max-md:w-full max-md:justify-center">Sign
+                    In</a>
+                <a routerLink="/register"
+                    class="inline-flex items-center justify-center gap-2 py-2 px-4 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-blue-600 bg-blue-600 text-white hover:bg-blue-700 max-md:w-full max-md:justify-center">Register</a>
+                }
+            </div>
+        </div>
+    </div>
+</nav>
