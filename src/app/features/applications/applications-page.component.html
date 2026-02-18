@@ -1,0 +1,128 @@
+<div class="min-h-screen pt-[5.5rem] pb-8">
+    <div class="max-w-[1140px] mx-auto px-4">
+        <div class="mb-8">
+            <h1 class="mb-1">My Applications</h1>
+            <p class="text-slate-500">Track your job applications</p>
+        </div>
+
+        @if (isLoading()) {
+        <div class="flex justify-center py-16">
+            <app-loading-spinner message="Loading applications..."></app-loading-spinner>
+        </div>
+        } @else {
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8 max-md:grid-cols-1">
+            <div class="bg-slate-800 border border-slate-700 rounded-[10px] p-5 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-[10px] flex items-center justify-center text-xl bg-amber-500/15 text-amber-400">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div>
+                    <span class="block text-2xl font-bold text-slate-100">{{ getStatusCount('en_attente') }}</span>
+                    <span class="text-[0.8125rem] text-slate-500">Pending</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-[10px] p-5 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-[10px] flex items-center justify-center text-xl bg-emerald-600/15 text-emerald-400">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div>
+                    <span class="block text-2xl font-bold text-slate-100">{{ getStatusCount('accepte') }}</span>
+                    <span class="text-[0.8125rem] text-slate-500">Accepted</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-[10px] p-5 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-[10px] flex items-center justify-center text-xl bg-red-600/15 text-red-400">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+                <div>
+                    <span class="block text-2xl font-bold text-slate-100">{{ getStatusCount('refuse') }}</span>
+                    <span class="text-[0.8125rem] text-slate-500">Rejected</span>
+                </div>
+            </div>
+        </div>
+
+        @if (applications().length === 0) {
+        <div class="text-center py-20 px-6">
+            <i class="bi bi-clipboard-x text-[3.5rem] text-slate-600 mb-4 block"></i>
+            <h3 class="mb-2 text-slate-100">No Applications Yet</h3>
+            <p class="text-slate-500 mb-6">Start tracking your job applications</p>
+            <a routerLink="/search"
+                class="inline-flex items-center gap-2 bg-blue-600 text-white py-2.5 px-5 rounded-lg no-underline font-medium text-sm transition-colors duration-200 hover:bg-blue-700 hover:text-white">
+                <i class="bi bi-search text-sm"></i> Search Jobs
+            </a>
+        </div>
+        } @else {
+        <div class="flex flex-col gap-4">
+            @for (app of applications(); track app.id) {
+            <div
+                class="bg-slate-800 border border-slate-700 rounded-xl p-6 transition-colors duration-200 hover:border-slate-600">
+                <div class="flex justify-between items-start gap-4 mb-4 flex-wrap max-md:flex-col">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-lg font-semibold text-slate-100 mb-1">{{ app.title }}</div>
+                        <div class="text-blue-500 font-medium text-[0.9375rem]">{{ app.company }}</div>
+                    </div>
+
+                    <select
+                        class="py-2 px-4 rounded-md font-semibold text-[0.8125rem] cursor-pointer border bg-slate-700 text-slate-100 min-w-[120px] focus:outline-none focus:border-blue-600 max-md:w-full"
+                        [ngModel]="app.status" (ngModelChange)="updateStatus(app, $event)" [ngClass]="{
+                            'border-amber-600 !text-amber-400': app.status === 'en_attente',
+                            'border-emerald-600 !text-emerald-400': app.status === 'accepte',
+                            'border-red-600 !text-red-400': app.status === 'refuse'
+                        }">
+                        <option value="en_attente">En attente</option>
+                        <option value="accepte">Accepté</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-6 mb-4 text-slate-400 text-[0.8125rem]">
+                    <span class="flex items-center gap-1.5"><i class="bi bi-geo-alt text-xs"></i> {{ app.location ||
+                        'Not specified' }}</span>
+                    <span class="flex items-center gap-1.5"><i class="bi bi-calendar3 text-xs"></i> {{
+                        formatDate(app.dateAdded) }}</span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-[0.8125rem] text-slate-500 mb-2 font-medium">Notes</label>
+                    <textarea
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-3 text-slate-100 text-sm resize-y min-h-[60px] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        [ngModel]="app.notes" (blur)="updateNotes(app, $event)"
+                        placeholder="Add notes about this application..."></textarea>
+                </div>
+
+                <div class="flex gap-3 flex-wrap">
+                    <a [href]="app.url" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 py-2 px-4 rounded-md font-medium text-[0.8125rem] cursor-pointer transition-all duration-200 no-underline border border-blue-600 bg-blue-600 text-white hover:bg-blue-700">
+                        <i class="bi bi-box-arrow-up-right"></i> View Job
+                    </a>
+                    <a [href]="app.url" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 py-2 px-4 rounded-md font-medium text-[0.8125rem] cursor-pointer transition-all duration-200 no-underline border border-slate-600 bg-transparent text-slate-100 hover:bg-slate-700">
+                        <i class="bi bi-arrow-up-right"></i> Apply
+                    </a>
+                    <button
+                        class="inline-flex items-center gap-1.5 py-2 px-4 rounded-md font-medium text-[0.8125rem] cursor-pointer transition-all duration-200 border border-red-600 bg-transparent text-red-400 hover:bg-red-600 hover:text-white"
+                        (click)="deleteApplication(app)">
+                        <i class="bi bi-trash3"></i> Delete
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+        }
+    </div>
+</div>
+
+@if (showToast()) {
+<div
+    class="fixed bottom-6 right-6 bg-emerald-600 text-white py-3.5 px-5 rounded-lg shadow-lg z-[1100] flex items-center gap-2 animate-[slideIn_0.3s_ease]">
+    <i class="bi bi-check-circle"></i>
+    {{ toastMessage() }}
+</div>
+}
