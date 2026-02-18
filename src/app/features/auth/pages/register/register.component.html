@@ -1,0 +1,134 @@
+<div class="min-h-screen flex items-center justify-center px-4 py-8 pt-20">
+    <div class="w-full max-w-[440px] bg-slate-800 border border-slate-700 rounded-xl p-8">
+        <div class="text-center mb-8">
+            <i class="bi bi-person-plus-fill text-[2.5rem] text-blue-500 mb-3 block"></i>
+            <h1 class="text-2xl text-slate-100 mb-2">Create Account</h1>
+            <p class="text-slate-500 text-[0.9375rem]">Join JobFinder and find your ideal job</p>
+        </div>
+
+        @if (errorMessage()) {
+        <div
+            class="py-3.5 px-4 rounded-lg mb-6 flex items-center gap-2 text-sm bg-red-600/[.12] border border-red-600/25 text-red-300">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ errorMessage() }}
+        </div>
+        }
+
+        @if (successMessage()) {
+        <div
+            class="py-3.5 px-4 rounded-lg mb-6 flex items-center gap-2 text-sm bg-emerald-600/[.12] border border-emerald-600/25 text-emerald-300">
+            <i class="bi bi-check-circle"></i>
+            {{ successMessage() }}
+        </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
+                <div class="mb-5">
+                    <label for="firstName" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">First
+                        Name</label>
+                    <input type="text" id="firstName" formControlName="firstName" placeholder="John"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        [class.!border-red-600]="isFieldInvalid('firstName')">
+                    @if (isFieldInvalid('firstName')) {
+                    <span class="block text-red-400 text-[0.8125rem] mt-1.5">First name is required</span>
+                    }
+                </div>
+
+                <div class="mb-5">
+                    <label for="lastName" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">Last
+                        Name</label>
+                    <input type="text" id="lastName" formControlName="lastName" placeholder="Doe"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        [class.!border-red-600]="isFieldInvalid('lastName')">
+                    @if (isFieldInvalid('lastName')) {
+                    <span class="block text-red-400 text-[0.8125rem] mt-1.5">Last name is required</span>
+                    }
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <label for="email" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">Email</label>
+                <input type="email" id="email" formControlName="email" placeholder="your@email.com"
+                    class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                    [class.!border-red-600]="isFieldInvalid('email')">
+                @if (isFieldInvalid('email')) {
+                <span class="block text-red-400 text-[0.8125rem] mt-1.5">
+                    @if (registerForm.get('email')?.errors?.['required']) {
+                    Email is required
+                    } @else if (registerForm.get('email')?.errors?.['email']) {
+                    Invalid email format
+                    }
+                </span>
+                }
+            </div>
+
+            <div class="mb-5">
+                <label for="password" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">Password</label>
+                <div class="relative">
+                    <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+                        placeholder="••••••••"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 pr-12 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        [class.!border-red-600]="isFieldInvalid('password')">
+                    <button type="button"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-slate-500 cursor-pointer p-1 text-base hover:text-slate-400"
+                        (click)="showPassword.set(!showPassword())">
+                        <i class="bi" [class.bi-eye]="!showPassword()" [class.bi-eye-slash]="showPassword()"></i>
+                    </button>
+                </div>
+                @if (isFieldInvalid('password')) {
+                <span class="block text-red-400 text-[0.8125rem] mt-1.5">
+                    @if (registerForm.get('password')?.errors?.['required']) {
+                    Password is required
+                    } @else if (registerForm.get('password')?.errors?.['minlength']) {
+                    Password must be at least 6 characters
+                    }
+                </span>
+                }
+            </div>
+
+            <div class="mb-5">
+                <label for="confirmPassword" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">Confirm
+                    Password</label>
+                <div class="relative">
+                    <input [type]="showConfirmPassword() ? 'text' : 'password'" id="confirmPassword"
+                        formControlName="confirmPassword" placeholder="••••••••"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 pr-12 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        [class.!border-red-600]="isFieldInvalid('confirmPassword')">
+                    <button type="button"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-slate-500 cursor-pointer p-1 text-base hover:text-slate-400"
+                        (click)="showConfirmPassword.set(!showConfirmPassword())">
+                        <i class="bi" [class.bi-eye]="!showConfirmPassword()"
+                            [class.bi-eye-slash]="showConfirmPassword()"></i>
+                    </button>
+                </div>
+                @if (isFieldInvalid('confirmPassword')) {
+                <span class="block text-red-400 text-[0.8125rem] mt-1.5">
+                    @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+                    Confirmation is required
+                    } @else if (registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+                    Passwords do not match
+                    }
+                </span>
+                }
+            </div>
+
+            <button type="submit"
+                class="w-full bg-blue-600 text-white border-none rounded-lg py-3.5 px-6 text-[0.9375rem] font-semibold cursor-pointer transition-colors duration-200 flex items-center justify-center gap-2 mt-2 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                [disabled]="isLoading()">
+                @if (isLoading()) {
+                <span
+                    class="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                Creating...
+                } @else {
+                <i class="bi bi-person-plus"></i> Create Account
+                }
+            </button>
+        </form>
+
+        <div class="text-center mt-6 pt-6 border-t border-slate-700">
+            <p class="text-slate-500 m-0 text-sm">Already have an account? <a routerLink="/login"
+                    class="text-blue-500 no-underline font-medium hover:underline">Sign In</a></p>
+        </div>
+    </div>
+</div>
