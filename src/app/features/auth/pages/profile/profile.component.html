@@ -1,0 +1,132 @@
+<div class="min-h-[calc(100vh-80px)] py-16 px-5">
+    <div class="max-w-[1140px] mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-2xl">
+                <div class="bg-slate-800/80 backdrop-blur-sm border border-slate-700 rounded-xl p-8">
+                    <div class="text-center mb-8">
+                        <div
+                            class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center font-bold text-[1.75rem] text-white mx-auto mb-4">
+                            {{ getInitials() }}
+                        </div>
+                        <h1 class="text-[1.75rem] mb-2">Mon Profil</h1>
+                        <p class="text-slate-400">Gérez vos informations personnelles</p>
+                    </div>
+
+                    @if (successMessage()) {
+                    <div
+                        class="py-3 px-4 rounded-lg mb-4 bg-emerald-600/[.12] border border-emerald-600/25 text-emerald-300">
+                        {{ successMessage() }}
+                    </div>
+                    }
+
+                    @if (errorMessage()) {
+                    <div class="py-3 px-4 rounded-lg mb-4 bg-red-600/[.12] border border-red-600/25 text-red-300">
+                        {{ errorMessage() }}
+                    </div>
+                    }
+
+                    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                        <div class="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+                            <div class="mb-3">
+                                <label for="firstName"
+                                    class="block mb-1.5 font-medium text-slate-400 text-sm">Prénom</label>
+                                <input type="text" id="firstName"
+                                    class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                                    formControlName="firstName" [class.!border-red-500]="isFieldInvalid('firstName')">
+                                @if (isFieldInvalid('firstName')) {
+                                <div class="block text-red-500 text-[0.85rem] mt-1">Le prénom est requis</div>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="lastName"
+                                    class="block mb-1.5 font-medium text-slate-400 text-sm">Nom</label>
+                                <input type="text" id="lastName"
+                                    class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                                    formControlName="lastName" [class.!border-red-500]="isFieldInvalid('lastName')">
+                                @if (isFieldInvalid('lastName')) {
+                                <div class="block text-red-500 text-[0.85rem] mt-1">Le nom est requis</div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="block mb-1.5 font-medium text-slate-400 text-sm">Email</label>
+                            <input type="email" id="email"
+                                class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                                formControlName="email" [class.!border-red-500]="isFieldInvalid('email')">
+                            @if (isFieldInvalid('email')) {
+                            <div class="block text-red-500 text-[0.85rem] mt-1">
+                                @if (profileForm.get('email')?.errors?.['required']) {
+                                L'email est requis
+                                } @else if (profileForm.get('email')?.errors?.['email']) {
+                                Format d'email invalide
+                                }
+                            </div>
+                            }
+                        </div>
+
+                        <hr class="my-6 border-slate-700">
+
+                        <h4 class="mb-3">Changer le mot de passe (optionnel)</h4>
+
+                        <div class="mb-6">
+                            <label for="newPassword" class="block mb-1.5 font-medium text-slate-400 text-sm">Nouveau mot
+                                de passe</label>
+                            <input type="password" id="newPassword"
+                                class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                                formControlName="newPassword" placeholder="Laissez vide pour ne pas changer">
+                            @if (profileForm.get('newPassword')?.errors?.['minlength']) {
+                            <div class="block text-red-500 text-[0.85rem] mt-1">
+                                Le mot de passe doit contenir au moins 6 caractères
+                            </div>
+                            }
+                        </div>
+
+                        <div class="flex gap-3 flex-wrap">
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 py-2.5 px-5 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-none hover:from-indigo-600 hover:to-purple-700 disabled:opacity-60"
+                                [disabled]="isLoading()">
+                                @if (isLoading()) {
+                                <span
+                                    class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                Enregistrement...
+                                } @else {
+                                Enregistrer les modifications
+                                }
+                            </button>
+
+                            <button type="button"
+                                class="inline-flex items-center gap-2 py-2.5 px-5 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-red-500 text-red-500 bg-transparent hover:bg-red-500 hover:text-white"
+                                (click)="confirmDelete()">
+                                Supprimer mon compte
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showDeleteConfirm()) {
+<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]" (click)="showDeleteConfirm.set(false)">
+    <div class="max-w-[400px] w-[90%] bg-slate-800/80 backdrop-blur-sm border border-slate-700 rounded-xl p-8"
+        (click)="$event.stopPropagation()">
+        <h3 class="mb-3">Supprimer votre compte ?</h3>
+        <p class="text-slate-400 mb-6">Cette action est irréversible. Toutes vos données seront supprimées.</p>
+        <div class="flex gap-3 justify-end">
+            <button
+                class="inline-flex items-center gap-2 py-2.5 px-5 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-slate-600 bg-transparent text-slate-100 hover:bg-slate-700"
+                (click)="showDeleteConfirm.set(false)">
+                Annuler
+            </button>
+            <button
+                class="inline-flex items-center gap-2 py-2.5 px-5 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 bg-red-500 border-none text-white hover:bg-red-600"
+                (click)="deleteAccount()">
+                Supprimer définitivement
+            </button>
+        </div>
+    </div>
+</div>
+}
