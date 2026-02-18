@@ -1,0 +1,135 @@
+<div class="pt-[5.5rem] pb-10 min-h-screen">
+    <div class="max-w-[1140px] mx-auto px-4">
+        <div class="mb-6">
+            <h1 class="mb-1">Search Jobs</h1>
+            <p class="text-slate-500">Find opportunities from multiple job boards</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 mb-6">
+            <div class="flex gap-3 flex-wrap max-md:flex-col">
+                <div class="flex-1 min-w-[180px] relative">
+                    <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 pl-10 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        placeholder="Job title, keywords..." [(ngModel)]="keywords" (keyup.enter)="search()">
+                </div>
+
+                <div class="flex-1 min-w-[180px] relative">
+                    <i class="bi bi-geo-alt absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 pl-10 text-slate-100 text-[0.9375rem] focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
+                        placeholder="Location" [(ngModel)]="location" (keyup.enter)="search()">
+                </div>
+
+                <button
+                    class="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-lg font-medium text-sm cursor-pointer transition-all duration-200 border border-blue-600 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+                    (click)="search()" [disabled]="isLoading()">
+                    <i class="bi bi-search"></i>
+                    {{ isLoading() ? 'Searching...' : 'Search' }}
+                </button>
+            </div>
+
+            <!-- Advanced Filters -->
+            <button
+                class="flex items-center gap-2 w-full mt-3 py-3 px-4 bg-transparent border border-slate-700 rounded-lg text-slate-400 text-sm cursor-pointer transition-all duration-200 hover:border-slate-600 hover:text-slate-100"
+                [class.open]="showFilters()" (click)="showFilters.set(!showFilters())">
+                <i class="bi bi-sliders"></i>
+                <span>Advanced Filters</span>
+                <i class="bi bi-chevron-down ml-auto transition-transform duration-200"
+                    [class.rotate-180]="showFilters()"></i>
+            </button>
+
+            <div class="grid grid-cols-3 gap-4 overflow-hidden transition-all duration-300 max-md:grid-cols-1"
+                [class]="showFilters() ? 'max-h-[200px] pt-4 mt-3 border-t border-slate-700 max-md:max-h-[400px]' : 'max-h-0'">
+                <div class="text-left">
+                    <label class="block text-xs text-slate-500 mb-1.5 font-medium">API Source</label>
+                    <select [(ngModel)]="selectedSource"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-slate-100 text-[0.8125rem] cursor-pointer focus:outline-none focus:border-blue-600">
+                        <option value="">All Sources</option>
+                        <option value="adzuna">Adzuna</option>
+                        <option value="arbeitnow">Arbeitnow</option>
+                        <option value="usajobs">USA Jobs</option>
+                    </select>
+                </div>
+
+                <div class="text-left">
+                    <label class="block text-xs text-slate-500 mb-1.5 font-medium">Country (Adzuna)</label>
+                    <select [(ngModel)]="selectedCountry"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-slate-100 text-[0.8125rem] cursor-pointer focus:outline-none focus:border-blue-600">
+                        <option value="fr">France</option>
+                        <option value="gb">United Kingdom</option>
+                        <option value="de">Germany</option>
+                        <option value="us">United States</option>
+                    </select>
+                </div>
+
+                <div class="text-left">
+                    <label class="block text-xs text-slate-500 mb-1.5 font-medium">Results per page</label>
+                    <select [(ngModel)]="resultsPerPage"
+                        class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-slate-100 text-[0.8125rem] cursor-pointer focus:outline-none focus:border-blue-600">
+                        <option [value]="10">10</option>
+                        <option [value]="20">20</option>
+                        <option [value]="50">50</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        @if (isLoading()) {
+        <div class="flex justify-center py-16">
+            <app-loading-spinner message="Searching jobs..."></app-loading-spinner>
+        </div>
+        } @else if (hasSearched() && jobs().length === 0) {
+        <div class="text-center py-16 px-6 text-slate-500">
+            <i class="bi bi-search text-5xl mb-4 opacity-40 block"></i>
+            <h3 class="mb-2 text-slate-100">No Results Found</h3>
+            <p>Try different keywords or adjust your filters</p>
+        </div>
+        } @else if (jobs().length > 0) {
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <span class="text-slate-400 text-sm flex items-center gap-2">
+                <i class="bi bi-briefcase"></i> {{ totalResults() }} jobs found
+            </span>
+            @if (currentSource()) {
+            <span class="text-[0.625rem] py-0.5 px-2 rounded font-semibold uppercase" [ngClass]="{
+                    'bg-blue-600/15 text-blue-400': currentSource() === 'adzuna',
+                    'bg-emerald-600/15 text-emerald-400': currentSource() === 'arbeitnow',
+                    'bg-red-600/15 text-red-400': currentSource() === 'usajobs'
+                }">
+                {{ currentSource() | uppercase }}
+            </span>
+            }
+        </div>
+
+        <div>
+            @for (job of jobs(); track job.id) {
+            <app-job-card [job]="job" (onTrackApplication)="trackApplication($event)">
+            </app-job-card>
+            }
+        </div>
+
+        @if (totalPages() > 1) {
+        <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" [totalResults]="totalResults()"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
+        }
+        } @else {
+        <div class="text-center py-16 px-6 text-slate-500">
+            <i class="bi bi-briefcase text-5xl mb-4 opacity-40 block"></i>
+            <h3 class="mb-2 text-slate-100">Start Your Search</h3>
+            <p>Enter keywords above to find jobs</p>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Toast -->
+@if (showToast()) {
+<div
+    class="fixed bottom-6 right-6 bg-emerald-600 text-white py-3.5 px-5 rounded-lg shadow-lg z-[1100] flex items-center gap-2 animate-[slideIn_0.3s_ease]">
+    <i class="bi bi-check-circle"></i>
+    {{ toastMessage() }}
+</div>
+}
