@@ -1,4 +1,4 @@
-// Job offer model from API
+
 export interface Job {
     id: string;
     title: string;
@@ -11,7 +11,7 @@ export interface Job {
     apiSource: 'adzuna' | 'arbeitnow' | 'usajobs';
 }
 
-// Job search parameters
+
 export interface JobSearchParams {
     keywords: string;
     location: string;
@@ -20,7 +20,7 @@ export interface JobSearchParams {
     country?: string; 
 }
 
-// Job search result with pagination info
+
 export interface JobSearchResult {
     jobs: Job[];
     totalResults: number;
