@@ -32,13 +32,8 @@ h6 {
 }
 
 a {
-  color: var(--color-blue-500);
   text-decoration: none;
   transition: color 0.2s;
-}
-
-a:hover {
-  color: var(--color-blue-600);
 }
 
 /* ===== Keyframe Animations ===== */

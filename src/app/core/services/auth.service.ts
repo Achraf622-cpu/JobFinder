@@ -1,8 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, map, catchError, of, throwError } from 'rxjs';
-import { User, AuthUser, LoginCredentials, RegisterData } from '../../models';
+import { Observable, map, catchError, of, throwError, forkJoin, switchMap } from 'rxjs';
+import { User, AuthUser, LoginCredentials, RegisterData, FavoriteOffer, Application } from '../../models';
 
 @Injectable({
     providedIn: 'root'
@@ -110,7 +110,29 @@ export class AuthService {
             return throwError(() => new Error('Utilisateur non connecté'));
         }
 
-        return this.http.delete<void>(`${this.API_URL}/users/${currentUser.id}`).pipe(
+        // Fetch user's favorites and applications, then delete them all before deleting the user
+        return forkJoin({
+            favorites: this.http.get<FavoriteOffer[]>(`${this.API_URL}/favoritesOffers?userId=${currentUser.id}`),
+            applications: this.http.get<Application[]>(`${this.API_URL}/applications?userId=${currentUser.id}`)
+        }).pipe(
+            switchMap(({ favorites, applications }) => {
+                // Build an array of all delete requests
+                const deleteRequests: Observable<void>[] = [];
+
+                favorites.forEach(fav => {
+                    deleteRequests.push(this.http.delete<void>(`${this.API_URL}/favoritesOffers/${fav.id}`));
+                });
+
+                applications.forEach(app => {
+                    deleteRequests.push(this.http.delete<void>(`${this.API_URL}/applications/${app.id}`));
+                });
+
+                // Delete user entity
+                deleteRequests.push(this.http.delete<void>(`${this.API_URL}/users/${currentUser.id}`));
+
+                // Execute all deletes in parallel (if no favorites/apps, just deletes user)
+                return forkJoin(deleteRequests.length > 0 ? deleteRequests : [of(undefined as void)]);
+            }),
             map(() => {
                 this.clearUser();
                 this.router.navigate(['/']);
