@@ -27,7 +27,7 @@
                 <div class="mb-5">
                     <label for="firstName" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">First
                         Name</label>
-                    <input type="text" id="firstName" formControlName="firstName" placeholder="John"
+                    <input type="text" id="firstName" formControlName="firstName" placeholder="Name"
                         class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
                         [class.!border-red-600]="isFieldInvalid('firstName')">
                     @if (isFieldInvalid('firstName')) {
@@ -38,7 +38,7 @@
                 <div class="mb-5">
                     <label for="lastName" class="block text-[0.8125rem] text-slate-400 mb-2 font-medium">Last
                         Name</label>
-                    <input type="text" id="lastName" formControlName="lastName" placeholder="Doe"
+                    <input type="text" id="lastName" formControlName="lastName" placeholder="LastName"
                         class="w-full bg-slate-700 border border-slate-600 rounded-lg py-3 px-4 text-slate-100 text-[0.9375rem] transition-colors duration-200 focus:outline-none focus:border-blue-600 placeholder:text-slate-500"
                         [class.!border-red-600]="isFieldInvalid('lastName')">
                     @if (isFieldInvalid('lastName')) {
@@ -113,9 +113,9 @@
                 }
             </div>
 
-            <button type="submit"
+            <button type="submit" 
                 class="w-full bg-blue-600 text-white border-none rounded-lg py-3.5 px-6 text-[0.9375rem] font-semibold cursor-pointer transition-colors duration-200 flex items-center justify-center gap-2 mt-2 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
-                [disabled]="isLoading()">
+                [disabled]="registerForm.invalid || isLoading()">
                 @if (isLoading()) {
                 <span
                     class="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
