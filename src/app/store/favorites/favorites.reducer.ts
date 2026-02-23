@@ -17,7 +17,7 @@ export const initialState: FavoritesState = {
 export const favoritesReducer = createReducer(
     initialState,
 
-    // Load favorites
+
     on(FavoritesActions.loadFavorites, (state) => ({
         ...state,
         loading: true,
@@ -34,7 +34,7 @@ export const favoritesReducer = createReducer(
         error
     })),
 
-    // Add favorite
+
     on(FavoritesActions.addFavorite, (state) => ({
         ...state,
         loading: true,
@@ -51,7 +51,7 @@ export const favoritesReducer = createReducer(
         error
     })),
 
-    // Remove favorite
+  
     on(FavoritesActions.removeFavorite, (state) => ({
         ...state,
         loading: true,
@@ -68,7 +68,7 @@ export const favoritesReducer = createReducer(
         error
     })),
 
-    // Clear error
+
     on(FavoritesActions.clearFavoritesError, (state) => ({
         ...state,
         error: null
