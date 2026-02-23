@@ -8,6 +8,32 @@
       "password": "password"
     }
   ],
-  "favoritesOffers": [],
-  "applications": []
+  "favoritesOffers": [
+    {
+      "id": "752e",
+      "offerId": "5633875041",
+      "title": "? Développeur Back-End Java (Junior 1–3 ans) – Nantes – API haut trafic",
+      "company": "ASAP TECHNOLOGIES",
+      "location": "Nantes, Loire-Atlantique",
+      "url": "https://www.adzuna.fr/details/5633875041?utm_medium=api&utm_source=b1b98c30",
+      "apiSource": "adzuna",
+      "userId": "98d8",
+      "dateAdded": "2026-02-23T14:20:41.350Z"
+    }
+  ],
+  "applications": [
+    {
+      "id": "5d1c",
+      "offerId": "5633875041",
+      "apiSource": "adzuna",
+      "title": "? Développeur Back-End Java (Junior 1–3 ans) – Nantes – API haut trafic",
+      "company": "ASAP TECHNOLOGIES",
+      "location": "Nantes, Loire-Atlantique",
+      "url": "https://www.adzuna.fr/details/5633875041?utm_medium=api&utm_source=b1b98c30",
+      "userId": "98d8",
+      "status": "accepte",
+      "notes": "",
+      "dateAdded": "2026-02-23T14:20:39.276Z"
+    }
+  ]
 }

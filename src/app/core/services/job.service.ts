@@ -115,7 +115,7 @@ export class JobService {
             httpParams = httpParams.set('where', params.location);
         }
 
-        // Use FR for France, GB for UK, US for USA
+
         const country = params.country || 'fr';
         const url = `${this.ADZUNA_BASE_URL}/${country}/search/${page}`;
 
@@ -123,7 +123,7 @@ export class JobService {
             map(response => {
                 let jobs: Job[] = (response.results || []).map((item: any) => this.mapAdzunaJob(item));
 
-                // Client-side filter: only keep jobs with keyword in title
+        
                 if (params.keywords && params.keywords.trim()) {
                     const keywords = params.keywords.toLowerCase().split(/\s+/);
                     jobs = jobs.filter(job => {
@@ -158,7 +158,6 @@ export class JobService {
 
     // ===== ARBEITNOW API =====
     private searchArbeitnow(params: JobSearchParams, page: number, resultsPerPage: number): Observable<JobSearchResult> {
-        // Arbeitnow API search param doesn't filter well, so we filter client-side
         const url = `${this.ARBEITNOW_BASE_URL}?page=${page}`;
 
         return this.http.get<any>(url).pipe(

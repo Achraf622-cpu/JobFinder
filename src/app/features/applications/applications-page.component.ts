@@ -44,10 +44,7 @@ export class ApplicationsPageComponent implements OnInit {
     return this.applications().filter(app => app.status === status).length;
   }
 
-  updateStatus(app: Application, event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const newStatus = select.value as ApplicationStatus;
-
+  updateStatus(app: Application, newStatus: ApplicationStatus): void {
     this.applicationsService.updateStatus(app.id!, newStatus).subscribe({
       next: () => {
         const apps = this.applications().map(a =>
